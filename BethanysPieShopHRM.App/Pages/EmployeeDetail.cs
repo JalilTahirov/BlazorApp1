@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Components;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace BethanysPieShopHRM.App.Pages
@@ -18,6 +19,8 @@ namespace BethanysPieShopHRM.App.Pages
 			InitializeCountries();
 			InitializeJobCategories();
 			InitializeEmployees();
+
+			Employee = Employees.FirstOrDefault(e => e.EmployeeId == int.Parse(EmployeeId));
 
 			return base.OnInitializedAsync();
 		}
