@@ -21,8 +21,9 @@ namespace BethanysPieShopHRM.App.Pages
 			InitializeEmployees();
 
 			Employee = Employees.FirstOrDefault(e => e.EmployeeId == int.Parse(EmployeeId));
-
+			Console.WriteLine($"Hello {Employee.FirstName}");
 			return base.OnInitializedAsync();
+      
 		}
 
 		public IEnumerable<Employee> Employees { get; set; }
