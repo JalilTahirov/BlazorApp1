@@ -17,6 +17,9 @@ namespace BethanysPieShopHRM.App.Pages
     [Inject]
     public IJobCategoryDataService JobCategoryDataService { get; set; }
 
+    [Inject]
+    public NavigationManager NavigationManager { get; set; }
+
     [Parameter]
     public string EmployeeId { get; set; }
     public Employee Employee { get; set; } = new Employee();
@@ -65,6 +68,8 @@ namespace BethanysPieShopHRM.App.Pages
       if (Employee.EmployeeId == 0) //new
       {
         var addedEmployee = await EmployeeDataService.AddEmployee(Employee);
+        addedEmployee.FirstName += "Updated"; 
+        await EmployeeDataService.UpdateEmployee(addedEmployee);
         if (addedEmployee != null)
         {
           StatusClass = "alert-success";
@@ -96,10 +101,29 @@ namespace BethanysPieShopHRM.App.Pages
       }
     }
 
-    protected void HandleInvalidSubmit()
+    protected async Task HandleInvalidSubmit()
     {
       StatusClass = "alert-danger";
       Message = "There some validation errors. Please try again";
     }
+
+    protected async Task DeleteEmployee() 
+    {
+      await EmployeeDataService.DeleteEmployee(Employee.EmployeeId);
+      StatusClass = "alert-success";
+      Message = "Employee deleted successfully";
+
+      Saved = true;
+    }
+
+    //
+    protected void NavigateToOverview() 
+    {
+      NavigationManager.NavigateTo("/employeeoverview");
+      
+
+
+    }
+
   }
 }

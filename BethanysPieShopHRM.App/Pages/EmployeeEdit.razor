@@ -127,6 +127,16 @@
 
 
         <button type="submit" class="btn btn-primary edit-btn">Save employee</button>
+
+        @if( Employee.EmployeeId > 0)
+        {
+            <a class="btn btn-danger" @onclick="@DeleteEmployee">
+                Delete
+            </a>
+        }
+        <a class="btn btn-outline-primary" @onclick="@NavigateToOverview">
+            Back to overview
+        </a>
     </EditForm>
 </section>
 }

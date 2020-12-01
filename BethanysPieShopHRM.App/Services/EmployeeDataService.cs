@@ -6,12 +6,15 @@ using System.Net.Http;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
+using RestSharp;
 
 namespace BethanysPieShopHRM.App.Services
 {
   public class EmployeeDataService : IEmployeeDataService
   {
     private readonly HttpClient _httpClient;
+    
+
     public EmployeeDataService(HttpClient httpClient)
     {
       _httpClient = httpClient;
@@ -38,7 +41,8 @@ namespace BethanysPieShopHRM.App.Services
       var employeeJson =
           new StringContent(JsonSerializer.Serialize(employee), Encoding.UTF8, "application/json");
 
-      await _httpClient.PutAsync("api/employee", employeeJson);
+
+    await _httpClient.PutAsync("api/employee", employeeJson);
     }
 
     public async Task DeleteEmployee(int employeeId)
