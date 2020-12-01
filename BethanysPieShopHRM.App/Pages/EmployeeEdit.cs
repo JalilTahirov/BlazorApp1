@@ -12,23 +12,94 @@ namespace BethanysPieShopHRM.App.Pages
   {
     [Inject]
     public IEmployeeDataService EmployeeDataService { get; set; }
-
     [Inject]
     public ICountryDataService CountryDataService { get; set; }
+    [Inject]
+    public IJobCategoryDataService JobCategoryDataService { get; set; }
 
     [Parameter]
     public string EmployeeId { get; set; }
-
     public Employee Employee { get; set; } = new Employee();
+    public JobCategory  JobCategory { get; set; } = new JobCategory();
     public List<Country> Countries { get; set; } = new List<Country>();
+    public List<JobCategory> JobCategories { get; set; } = new List<JobCategory>();
+
 
     public string CountryId = string.Empty;
+    public string JobCategoryId = string.Empty;
+
+    // used to state of screen
+    protected string Message = string.Empty;
+    protected string StatusClass = string.Empty;
+    protected bool Saved;
 
     protected async override Task OnInitializedAsync()
     {
-      Employee = await EmployeeDataService.GetEmployeeDetails(int.Parse(EmployeeId));
+      Saved = false;
       Countries = (await CountryDataService.GetAllCountries()).ToList();
-      CountryId = Employee.CountryId.ToString(); 
+      JobCategories = (await JobCategoryDataService.GetAllJobCategories()).ToList();
+
+      int.TryParse(EmployeeId, out var employeeId);
+
+      if (employeeId == 0) //new employee is being created
+      {
+        //add some defaults
+        Employee = new Employee { CountryId = 1, JobCategoryId = 1, BirthDate = DateTime.Now, JoinedDate = DateTime.Now };
+      }
+      else
+      {
+        Employee = await EmployeeDataService.GetEmployeeDetails(int.Parse(EmployeeId));
+      }
+
+      CountryId = Employee.CountryId.ToString();
+      JobCategoryId = Employee.JobCategoryId.ToString();
+
+    }
+
+    protected async Task HandleValidSubmit()
+    {
+      Saved = false;
+      Employee.CountryId = int.Parse(CountryId);
+      Employee.JobCategoryId = int.Parse(JobCategoryId);
+
+      if (Employee.EmployeeId == 0) //new
+      {
+        var addedEmployee = await EmployeeDataService.AddEmployee(Employee);
+        if (addedEmployee != null)
+        {
+          StatusClass = "alert-success";
+          Message = "New employee added";
+          Saved = true;
+        }
+        else
+        {
+          StatusClass = "alert-danger";
+          Message = "Something went wrong adding  a new employee.Please try again";
+          Saved = false;
+        }
+      }
+      else
+      {
+        try
+        {
+          await EmployeeDataService.UpdateEmployee(Employee);
+        }
+        catch (Exception e)
+        {
+
+          throw e;
+        }
+       
+        StatusClass = "alert-success";
+        Message = "Employee updated successfully";
+        Saved = true;
+      }
+    }
+
+    protected void HandleInvalidSubmit()
+    {
+      StatusClass = "alert-danger";
+      Message = "There some validation errors. Please try again";
     }
   }
 }
