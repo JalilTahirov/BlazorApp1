@@ -120,10 +120,6 @@ namespace BethanysPieShopHRM.App.Pages
     protected void NavigateToOverview() 
     {
       NavigationManager.NavigateTo("/employeeoverview");
-      
-
-
     }
-
   }
 }
